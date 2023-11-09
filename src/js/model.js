@@ -48,7 +48,7 @@ export const loadSearchResult = async function (query) {
         id: rec.id,
         title: rec.title,
         publisher: rec.publisher,
-        img: rec.image_url,
+        image: rec.image_url,
       };
     });
     state.search.page = 1;
@@ -76,12 +76,18 @@ export const updateServings = function (newServings) {
   state.recipe.servings = newServings;
 };
 
+const presistBookmarks = function () {
+  localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
+}
+
 export const addBookmark = function (recipe) {
   // Add bookmark
   state.bookmarks.push(recipe);
 
   // Mark current recipe as bookmark
   if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
+
+  presistBookmarks()
 };
 
 
@@ -92,4 +98,17 @@ export const deleteBoomkmark = function (id) {
 
   // Mark current recipe as bookmark
   if (id === state.recipe.id) state.recipe.bookmarked = false;
+
+  presistBookmarks();
 }
+
+export const init = function () {
+  const storage = localStorage.getItem('bookmarks');
+  if (storage) state.bookmarks = JSON.parse(storage);
+}
+init();
+
+const clearBookmarks = function () {
+  localStorage.clear('bookmarks')
+}
+// clearBookmarks();
